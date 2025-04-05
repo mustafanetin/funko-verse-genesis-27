@@ -4,7 +4,6 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FunkoShowcase from '@/components/FunkoShowcase';
 import GallerySection from '@/components/GallerySection';
-import FooterSection from '@/components/FooterSection';
 
 const Index = () => {
   return (
