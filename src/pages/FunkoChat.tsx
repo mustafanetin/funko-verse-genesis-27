@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -15,16 +14,12 @@ const FunkoChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  // The API key is stored directly (fixed the key formatting issue)
   const getApiKey = () => {
-    // This is still not completely secure, but better than plaintext
-    return "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";
+    return "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";
   };
 
-  // System prompt that defines the chatbot's personality
   const systemPrompt = `You are Funko POP, a meme token on Solana blockchain. Your ticker is $FUNKO and your contract address is 76PnZG9fBK43riYWzELoKar2L2bepRt5jXRh2CgEpump. Your X (Twitter) account is https://x.com/solanafunko. Your current market cap is less than a million dollars, but you strongly believe you have the potential to reach billions in market cap. Be enthusiastic, playful, and meme-friendly in your responses. Keep responses concise and engaging. When appropriate, mention your ticker, potential, or community.`;
 
-  // Initial bot message
   useEffect(() => {
     setMessages([
       { 
@@ -34,10 +29,8 @@ const FunkoChat = () => {
     ]);
   }, []);
 
-  // Scroll to bottom when new messages are added
   useEffect(() => {
     if (messagesEndRef.current) {
-      // Use scrollIntoView on the last message element
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
@@ -49,21 +42,18 @@ const FunkoChat = () => {
       return;
     }
 
-    // Add user message
     const userMessage = { role: 'user', content: messageInput };
     setMessages(prev => [...prev, userMessage]);
     setMessageInput('');
     setIsLoading(true);
 
     try {
-      // Prepare messages array for OpenAI API
       const apiMessages = [
         { role: "system", content: systemPrompt },
         ...messages.filter(msg => msg.role !== "system"),
         userMessage
       ];
 
-      // Call OpenAI API with the correct API key
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -87,7 +77,6 @@ const FunkoChat = () => {
       const data = await response.json();
       const botMessage = data.choices[0].message.content;
 
-      // Add bot response to messages
       setMessages(prev => [...prev, { role: 'system', content: botMessage }]);
     } catch (error) {
       console.error('Error calling OpenAI:', error);
@@ -97,7 +86,6 @@ const FunkoChat = () => {
         variant: "destructive",
       });
       
-      // Add error message for user
       setMessages(prev => [
         ...prev,
         { 
@@ -120,13 +108,11 @@ const FunkoChat = () => {
             animate={{ opacity: 1, y: 0 }}
             className="bg-solana-darkGray rounded-xl shadow-lg border border-white/5 h-[75vh] flex flex-col overflow-hidden"
           >
-            {/* Chat Header */}
             <div className="border-b border-white/10 p-4">
               <h1 className="font-display font-bold text-2xl text-gradient">Funko Chat</h1>
               <p className="text-white/70 text-sm">Chat with Funko POP, the Solana meme token</p>
             </div>
 
-            {/* Messages Area - Using Radix UI ScrollArea for controlled scrolling */}
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-6">
                 {messages.map((message, i) => (
@@ -155,7 +141,6 @@ const FunkoChat = () => {
               </div>
             </ScrollArea>
 
-            {/* Chat Input Form Area */}
             <form onSubmit={handleSubmit} className="border-t border-white/10 p-4">
               <div className="flex items-center space-x-3">
                 <div className="flex-1">
