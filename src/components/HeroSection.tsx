@@ -22,9 +22,6 @@ const HeroSection = () => {
               Learn More
             </Button>
           </div>
-          <p className="text-sm text-white/50 mt-4">
-            *We're just generating images, not minting NFTs
-          </p>
         </div>
         <div className="flex-1 relative h-[400px] md:h-[600px] w-full flex justify-center items-center">
           <div className="funko-box funko-box-green w-[220px] h-[280px] md:w-[280px] md:h-[350px] transform -rotate-6 absolute z-10 top-10 left-0 md:left-20 animate-float">
