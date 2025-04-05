@@ -2,8 +2,7 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
-import AboutSection from '@/components/AboutSection';
-import TutorialSection from '@/components/TutorialSection';
+import FunkoShowcase from '@/components/FunkoShowcase';
 import GallerySection from '@/components/GallerySection';
 import FooterSection from '@/components/FooterSection';
 
@@ -13,8 +12,7 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
-        <AboutSection />
-        <TutorialSection />
+        <FunkoShowcase />
         <GallerySection />
       </main>
       <FooterSection />

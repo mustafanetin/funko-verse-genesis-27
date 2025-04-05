@@ -14,8 +14,7 @@ const Navbar = () => {
         </div>
         <nav className="hidden md:flex gap-6 items-center">
           <a href="#home" className="text-white/70 hover:text-white transition-colors">Home</a>
-          <a href="#about" className="text-white/70 hover:text-white transition-colors">About</a>
-          <a href="#tutorial" className="text-white/70 hover:text-white transition-colors">Tutorial</a>
+          <a href="#showcase" className="text-white/70 hover:text-white transition-colors">Showcase</a>
           <a href="#gallery" className="text-white/70 hover:text-white transition-colors">Gallery</a>
           <Button className="bg-solana-green text-solana-black hover:bg-solana-green/90">
             Connect Wallet

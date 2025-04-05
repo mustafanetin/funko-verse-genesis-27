@@ -12,16 +12,19 @@ const HeroSection = () => {
             Create Your Own <span className="text-gradient">Funko POP!</span> on Solana
           </h1>
           <p className="text-lg md:text-xl text-white/70 mb-8 max-w-xl">
-            Design, mint, and collect unique customized Funko figurines powered by Solana blockchain technology. The future of digital collectibles is here.
+            Design and create unique customized Funko figurines in the Solana style. Generate amazing images of your favorite characters or personalities.
           </p>
           <div className="flex flex-wrap gap-4">
             <Button className="bg-solana-green text-solana-black hover:bg-solana-green/90 text-lg px-8 py-6">
-              Get Started
+              Click here to make your own Funko!
             </Button>
             <Button variant="outline" className="border-solana-purple hover:bg-solana-purple/20 text-lg px-8 py-6">
               Learn More
             </Button>
           </div>
+          <p className="text-sm text-white/50 mt-4">
+            *We're just generating images, not minting NFTs
+          </p>
         </div>
         <div className="flex-1 relative h-[400px] md:h-[600px] w-full flex justify-center items-center">
           <div className="funko-box funko-box-green w-[220px] h-[280px] md:w-[280px] md:h-[350px] transform -rotate-6 absolute z-10 top-10 left-0 md:left-20 animate-float">
