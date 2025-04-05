@@ -7,14 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const FunkoChat = () => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [shouldScroll, setShouldScroll] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   // OpenAI API key
@@ -33,22 +32,13 @@ const FunkoChat = () => {
     ]);
   }, []);
 
-  // Handle scroll only when new messages are added and user hasn't manually scrolled up
+  // Scroll to bottom when new messages are added
   useEffect(() => {
-    if (shouldScroll && messagesEndRef.current) {
+    if (messagesEndRef.current) {
+      // Use scrollIntoView on the last message element
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, shouldScroll]);
-
-  // Modified scroll handler to better detect user scrolling
-  const handleScroll = () => {
-    if (!messagesContainerRef.current) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
-    // Consider "close to bottom" as being within 50px of the bottom
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
-    setShouldScroll(isAtBottom);
-  };
+  }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +51,6 @@ const FunkoChat = () => {
     const userMessage = { role: 'user', content: messageInput };
     setMessages(prev => [...prev, userMessage]);
     setMessageInput('');
-    setShouldScroll(true); // Always scroll on user message
     setIsLoading(true);
 
     try {
@@ -121,7 +110,7 @@ const FunkoChat = () => {
   return (
     <div className="flex flex-col min-h-screen bg-solana-black text-white">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 pt-20 pb-12"> {/* Reduced top padding */}
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-12">
         <div className="max-w-4xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -134,36 +123,34 @@ const FunkoChat = () => {
               <p className="text-white/70 text-sm">Chat with Funko POP, the Solana meme token</p>
             </div>
 
-            {/* Messages Area - Apply event listener to this specific div */}
-            <div 
-              className="flex-1 overflow-y-auto p-4 space-y-6"
-              ref={messagesContainerRef}
-              onScroll={handleScroll}
-            >
-              {messages.map((message, i) => (
-                <div key={i} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] rounded-lg p-4 ${
-                    message.role === 'user' 
-                      ? 'bg-solana-boxPurple border border-solana-purple/30' 
-                      : 'bg-solana-boxGreen border border-solana-green/30'
-                  }`}>
-                    <p className="text-white whitespace-pre-wrap">{message.content}</p>
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-solana-boxGreen rounded-lg p-4 border border-solana-green/30 max-w-[80%]">
-                    <div className="flex space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" />
-                      <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.2s" }} />
-                      <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.4s" }} />
+            {/* Messages Area - Using Radix UI ScrollArea for controlled scrolling */}
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-6">
+                {messages.map((message, i) => (
+                  <div key={i} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[80%] rounded-lg p-4 ${
+                      message.role === 'user' 
+                        ? 'bg-solana-boxPurple border border-solana-purple/30' 
+                        : 'bg-solana-boxGreen border border-solana-green/30'
+                    }`}>
+                      <p className="text-white whitespace-pre-wrap">{message.content}</p>
                     </div>
                   </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-solana-boxGreen rounded-lg p-4 border border-solana-green/30 max-w-[80%]">
+                      <div className="flex space-x-2">
+                        <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" />
+                        <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.2s" }} />
+                        <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.4s" }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
 
             {/* Chat Input Form Area */}
             <form onSubmit={handleSubmit} className="border-t border-white/10 p-4">
