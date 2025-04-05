@@ -7,12 +7,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import FunkoChat from "./pages/FunkoChat";
 import NotFound from "./pages/NotFound";
+import Favicon from "./components/Favicon";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <Favicon emoji="🚀" color="#9945FF" />
       <Toaster />
       <Sonner />
       <BrowserRouter>
