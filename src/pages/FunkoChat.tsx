@@ -7,21 +7,23 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const FunkoChat = () => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState<string>('');
+  const [showApiDialog, setShowApiDialog] = useState<boolean>(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  
-  // We'll store the API key in a more secure way
-  // OpenAI API key - not directly exposed in the source code
-  const getApiKey = () => {
-    // This is still not fully secure, but better than hardcoding directly
-    const key = "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";
-    return key;
-  };
   
   // System prompt that defines the chatbot's personality
   const systemPrompt = `You are Funko POP, a meme token on Solana blockchain. Your ticker is $FUNKO and your contract address is 76PnZG9fBK43riYWzELoKar2L2bepRt5jXRh2CgEpump. Your X (Twitter) account is https://x.com/solanafunko. Your current market cap is less than a million dollars, but you strongly believe you have the potential to reach billions in market cap. Be enthusiastic, playful, and meme-friendly in your responses. Keep responses concise and engaging. When appropriate, mention your ticker, potential, or community.`;
@@ -34,6 +36,13 @@ const FunkoChat = () => {
         content: "Hey there! I'm Funko POP, the hottest meme token on Solana! How can I help you today? 🚀"
       }
     ]);
+    
+    // Check if API key is in localStorage
+    const savedApiKey = localStorage.getItem('funko_openai_key');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+      setShowApiDialog(false);
+    }
   }, []);
 
   // Scroll to bottom when new messages are added
@@ -44,10 +53,37 @@ const FunkoChat = () => {
     }
   }, [messages]);
 
+  const handleSaveApiKey = () => {
+    if (apiKey.trim().startsWith('sk-')) {
+      localStorage.setItem('funko_openai_key', apiKey.trim());
+      setShowApiDialog(false);
+      toast({
+        title: "API Key Saved",
+        description: "Your OpenAI API key has been saved for this session.",
+      });
+    } else {
+      toast({
+        title: "Invalid API Key",
+        description: "Please enter a valid OpenAI API key starting with 'sk-'.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!messageInput.trim()) {
+      return;
+    }
+
+    if (!apiKey) {
+      setShowApiDialog(true);
+      toast({
+        title: "API Key Required",
+        description: "Please enter your OpenAI API key to continue.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -70,7 +106,7 @@ const FunkoChat = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getApiKey()}`
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
@@ -94,7 +130,7 @@ const FunkoChat = () => {
       console.error('Error calling OpenAI:', error);
       toast({
         title: "Error",
-        description: "Failed to get a response. Please try again.",
+        description: "Failed to get a response. Please check your API key and try again.",
         variant: "destructive",
       });
       
@@ -103,7 +139,7 @@ const FunkoChat = () => {
         ...prev,
         { 
           role: 'system', 
-          content: "Sorry, I'm having trouble connecting right now. Please try again in a moment! 🛠️"
+          content: "Sorry, I'm having trouble connecting right now. Please check your API key or try again in a moment! 🛠️"
         }
       ]);
     } finally {
@@ -180,6 +216,43 @@ const FunkoChat = () => {
           </motion.div>
         </div>
       </main>
+
+      {/* API Key Dialog */}
+      <Dialog open={showApiDialog} onOpenChange={setShowApiDialog}>
+        <DialogContent className="bg-solana-darkGray text-white border-solana-purple/50">
+          <DialogHeader>
+            <DialogTitle>Enter Your OpenAI API Key</DialogTitle>
+            <DialogDescription className="text-white/70">
+              To use the Funko Chat, please enter your OpenAI API key. Your key will be stored locally and never sent to our servers.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="sk-..."
+              className="bg-solana-darkGray/30 border-white/10"
+            />
+            <p className="text-sm text-white/50 mt-2">
+              You can get your API key from{" "}
+              <a 
+                href="https://platform.openai.com/api-keys" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-solana-green hover:underline"
+              >
+                OpenAI's website
+              </a>
+            </p>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSaveApiKey} className="bg-solana-green text-solana-black hover:bg-solana-green/90">
+              Save API Key
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
