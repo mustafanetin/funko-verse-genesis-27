@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import FooterSection from '@/components/FooterSection';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
