@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
@@ -15,8 +16,10 @@ const HeroSection = () => {
             Design and create unique customized Funko figurines in the Solana style. Generate amazing images of your favorite characters or personalities.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button className="bg-solana-green text-solana-black hover:bg-solana-green/90 text-lg px-8 py-6">
-              Click here to make your own Funko!
+            <Button asChild className="bg-solana-green text-solana-black hover:bg-solana-green/90 text-lg px-8 py-6">
+              <Link to="/create">
+                Click here to make your own Funko!
+              </Link>
             </Button>
             <Button variant="outline" className="border-solana-purple hover:bg-solana-purple/20 text-lg px-8 py-6">
               Learn More
