@@ -12,7 +12,9 @@ const FunkoChat = () => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldScroll, setShouldScroll] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   // OpenAI API key
@@ -31,10 +33,21 @@ const FunkoChat = () => {
     ]);
   }, []);
 
-  // Scroll to bottom when messages change
+  // Handle scroll only when new messages are added and user hasn't manually scrolled up
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (shouldScroll && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, shouldScroll]);
+
+  // Detect user scroll to prevent auto-scrolling when user is reading previous messages
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    const isScrolledToBottom = scrollHeight - scrollTop - clientHeight < 50;
+    setShouldScroll(isScrolledToBottom);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +60,7 @@ const FunkoChat = () => {
     const userMessage = { role: 'user', content: messageInput };
     setMessages(prev => [...prev, userMessage]);
     setMessageInput('');
+    setShouldScroll(true); // Always scroll on user message
     setIsLoading(true);
 
     try {
@@ -120,7 +134,11 @@ const FunkoChat = () => {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div 
+              className="flex-1 overflow-y-auto p-4 space-y-6"
+              ref={messagesContainerRef}
+              onScroll={handleScroll}
+            >
               {messages.map((message, i) => (
                 <div key={i} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[80%] rounded-lg p-4 ${
