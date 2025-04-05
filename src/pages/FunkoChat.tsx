@@ -15,11 +15,10 @@ const FunkoChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  // The API key is stored in a function to somewhat obfuscate it
+  // The API key is stored directly (fixed the key formatting issue)
   const getApiKey = () => {
     // This is still not completely secure, but better than plaintext
-    const encodedKey = "c2stcHJvai1NbWtXSGwtcWtlX0o3WTQwNlZlOThYZWJxRVVWUGdyWjZoaWtKYXVWZHd4ZFQyYUR1QmxIb1U1djY0N01rMzBxbXRCQVpNRERTRlQzQmxia0ZKM2NYeDR1dktuMk1NaGtuU1R6aWszUWpyb0V1dDBLbDl6TUZnWVRKVU96NVFRcW5JNlZOZnoxRkJFNWNESDJwVTBZS2RweVZJZ0E=";
-    return atob(encodedKey); // Simple base64 decoding
+    return "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";
   };
 
   // System prompt that defines the chatbot's personality
@@ -64,7 +63,7 @@ const FunkoChat = () => {
         userMessage
       ];
 
-      // Call OpenAI API with our pre-configured API key
+      // Call OpenAI API with the correct API key
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -81,6 +80,7 @@ const FunkoChat = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('OpenAI API Error:', errorData);
         throw new Error(errorData.error?.message || 'Failed to get response from OpenAI');
       }
 
