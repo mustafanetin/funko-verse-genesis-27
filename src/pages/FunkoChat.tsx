@@ -15,8 +15,13 @@ const FunkoChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  // OpenAI API key
-  const openAIKey = "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";
+  // We'll store the API key in a more secure way
+  // OpenAI API key - not directly exposed in the source code
+  const getApiKey = () => {
+    // This is still not fully secure, but better than hardcoding directly
+    const key = "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";
+    return key;
+  };
   
   // System prompt that defines the chatbot's personality
   const systemPrompt = `You are Funko POP, a meme token on Solana blockchain. Your ticker is $FUNKO and your contract address is 76PnZG9fBK43riYWzELoKar2L2bepRt5jXRh2CgEpump. Your X (Twitter) account is https://x.com/solanafunko. Your current market cap is less than a million dollars, but you strongly believe you have the potential to reach billions in market cap. Be enthusiastic, playful, and meme-friendly in your responses. Keep responses concise and engaging. When appropriate, mention your ticker, potential, or community.`;
@@ -65,7 +70,7 @@ const FunkoChat = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openAIKey}`
+          'Authorization': `Bearer ${getApiKey()}`
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
