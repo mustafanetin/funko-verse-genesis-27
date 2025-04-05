@@ -30,7 +30,7 @@ const AboutSection = () => {
             The <span className="text-gradient">Future</span> of Collectibles
           </h2>
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
-            FunkoVerse Genesis combines the beloved Funko POP! aesthetic with Solana's powerful blockchain technology to create the next generation of digital collectibles.
+            Funko POP! aesthetic with Solana's powerful blockchain technology to create the next generation of digital collectibles.
           </p>
         </div>
         
