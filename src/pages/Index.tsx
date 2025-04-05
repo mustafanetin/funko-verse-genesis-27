@@ -15,7 +15,6 @@ const Index = () => {
         <FunkoShowcase />
         <GallerySection />
       </main>
-      <FooterSection />
     </div>
   );
 };
