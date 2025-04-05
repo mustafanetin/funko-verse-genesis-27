@@ -175,7 +175,6 @@ const FunkoChat = () => {
           </motion.div>
         </div>
       </main>
-      <FooterSection />
     </div>
   );
 };
