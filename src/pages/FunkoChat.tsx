@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const FunkoChat = () => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
@@ -14,6 +16,7 @@ const FunkoChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   // System prompt that defines the chatbot's personality
   const systemPrompt = `You are Funko POP, a meme token on Solana blockchain. Your ticker is $FUNKO and your contract address is 76PnZG9fBK43riYWzELoKar2L2bepRt5jXRh2CgEpump. Your X (Twitter) account is https://x.com/solanafunko. Your current market cap is less than a million dollars, but you strongly believe you have the potential to reach billions in market cap. Be enthusiastic, playful, and meme-friendly in your responses. Keep responses concise and engaging. When appropriate, mention your ticker, potential, or community.`;
@@ -30,8 +33,12 @@ const FunkoChat = () => {
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
   }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,39 +110,39 @@ const FunkoChat = () => {
   return (
     <div className="flex flex-col min-h-screen bg-solana-black text-white">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 pt-24 pb-12">
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-12 md:pt-24">
         <div className="max-w-4xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-solana-darkGray rounded-xl shadow-lg border border-white/5 h-[75vh] flex flex-col"
+            className="bg-solana-darkGray rounded-xl shadow-lg border border-white/5 h-[80vh] md:h-[75vh] flex flex-col"
           >
             {/* Chat Header */}
-            <div className="border-b border-white/10 p-4">
-              <h1 className="font-display font-bold text-2xl text-gradient">Funko Chat</h1>
-              <p className="text-white/70 text-sm">Chat with Funko POP, the Solana meme token</p>
+            <div className="border-b border-white/10 p-3 md:p-4">
+              <h1 className="font-display font-bold text-xl md:text-2xl text-gradient">Funko Chat</h1>
+              <p className="text-white/70 text-xs md:text-sm">Chat with Funko POP, the Solana meme token</p>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 md:space-y-6">
               {messages.map((message, i) => (
                 <div key={i} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] rounded-lg p-4 ${
+                  <div className={`max-w-[85%] md:max-w-[80%] rounded-lg p-3 md:p-4 ${
                     message.role === 'user' 
                       ? 'bg-solana-boxPurple border border-solana-purple/30' 
                       : 'bg-solana-boxGreen border border-solana-green/30'
                   }`}>
-                    <p className="text-white whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-white text-sm md:text-base whitespace-pre-wrap">{message.content}</p>
                   </div>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-solana-boxGreen rounded-lg p-4 border border-solana-green/30 max-w-[80%]">
+                  <div className="bg-solana-boxGreen rounded-lg p-3 md:p-4 border border-solana-green/30 max-w-[85%] md:max-w-[80%]">
                     <div className="flex space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" />
-                      <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.2s" }} />
-                      <div className="w-3 h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.4s" }} />
+                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-solana-green animate-pulse" />
+                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.2s" }} />
+                      <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-solana-green animate-pulse" style={{ animationDelay: "0.4s" }} />
                     </div>
                   </div>
                 </div>
@@ -144,23 +151,23 @@ const FunkoChat = () => {
             </div>
 
             {/* Chat Input Form Area */}
-            <form onSubmit={handleSubmit} className="border-t border-white/10 p-4">
-              <div className="flex items-center space-x-3">
+            <form onSubmit={handleSubmit} className="border-t border-white/10 p-3 md:p-4">
+              <div className="flex items-center space-x-2 md:space-x-3">
                 <div className="flex-1">
                   <Input
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder="Send a message to Funko POP..."
-                    className="bg-solana-darkGray/50 border-white/10 focus-visible:ring-solana-purple"
+                    className="bg-solana-darkGray/50 border-white/10 focus-visible:ring-solana-purple text-sm md:text-base"
                     disabled={isLoading}
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="bg-solana-green text-solana-black hover:bg-solana-green/90 h-10 w-10"
+                  className="bg-solana-green text-solana-black hover:bg-solana-green/90 h-9 w-9 md:h-10 md:w-10 p-0 flex items-center justify-center"
                   disabled={isLoading}
                 >
-                  <Send size={18} />
+                  <Send size={isMobile ? 16 : 18} />
                 </Button>
               </div>
             </form>
