@@ -40,13 +40,14 @@ const FunkoChat = () => {
     }
   }, [messages, shouldScroll]);
 
-  // Detect user scroll to prevent auto-scrolling when user is reading previous messages
+  // Modified scroll handler to better detect user scrolling
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
     
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
-    const isScrolledToBottom = scrollHeight - scrollTop - clientHeight < 50;
-    setShouldScroll(isScrolledToBottom);
+    // Consider "close to bottom" as being within 50px of the bottom
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+    setShouldScroll(isAtBottom);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,12 +121,12 @@ const FunkoChat = () => {
   return (
     <div className="flex flex-col min-h-screen bg-solana-black text-white">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 pt-24 pb-12">
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-12"> {/* Reduced top padding */}
         <div className="max-w-4xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-solana-darkGray rounded-xl shadow-lg border border-white/5 h-[75vh] flex flex-col"
+            className="bg-solana-darkGray rounded-xl shadow-lg border border-white/5 h-[75vh] flex flex-col overflow-hidden"
           >
             {/* Chat Header */}
             <div className="border-b border-white/10 p-4">
@@ -133,7 +134,7 @@ const FunkoChat = () => {
               <p className="text-white/70 text-sm">Chat with Funko POP, the Solana meme token</p>
             </div>
 
-            {/* Messages Area */}
+            {/* Messages Area - Apply event listener to this specific div */}
             <div 
               className="flex-1 overflow-y-auto p-4 space-y-6"
               ref={messagesContainerRef}
